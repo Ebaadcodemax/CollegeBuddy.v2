@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chats | CollegeBuddy</title>
+  <link rel="stylesheet" href="/css/chat.css">
+</head>
+<body>
+  <div class="navbar">
+    <div class="welcome">
+      👋 Welcome, <%= me.name %> (<%= me.college %>)
+    </div>
+    <div class="nav-actions">
+      <a href="/auth/logout">Logout</a>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <a 
+      href="/chat?filter=college" 
+      class="<%= (typeof filter !== 'undefined' && filter === 'college') ? 'active' : '' %>"
+    >🏫 My College</a>
+
+    <a 
+      href="/chat?filter=all" 
+      class="<%= (typeof filter !== 'undefined' && filter === 'all') ? 'active' : '' %>"
+    >🌍 All Users</a>
+  </div>
+
+  <div class="user-list">
+    <% if (users && users.length > 0) { %>
+      <% users.forEach(u => { %>
+        <div class="user-card">
+          <div>
+            <strong><%= u.name %></strong><br>
+            <small><%= u.email %></small>
+          </div>
+          <a href="/chat/user/<%= u._id %>">
+            <button>Message</button>
+          </a>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p style="text-align:center;">No users found.</p>
+    <% } %>
+  </div>
+</body>
+</html>

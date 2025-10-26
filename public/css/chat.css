@@ -1,0 +1,74 @@
+.filter-bar {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 20px 0;
+}
+
+.filter-bar a {
+  padding: 10px 20px;
+  border-radius: 25px;
+  text-decoration: none;
+  color: #1e293b;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.filter-bar a:hover {
+  transform: translateY(-2px);
+  background: #e2e8f0;
+}
+
+.filter-bar a.active {
+  background: #4a90e2;
+  color: white;
+  box-shadow: 0 4px 12px rgba(74,144,226,0.3);
+}
+body {
+      font-family: Arial, sans-serif;
+      background: #f6f8fa;
+      padding: 20px;
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #2c3e50;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+    }
+    .navbar a {
+      color: white;
+      text-decoration: none;
+    }
+    .welcome {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    .user-list {
+      margin-top: 30px;
+    }
+    .user-card {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .user-card button {
+      padding: 5px 10px;
+      border: none;
+      background: #3498db;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .user-card button:hover {
+      background: #2980b9;
+    }

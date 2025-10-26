@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chat — <%= chat.members.filter(m => m._id.toString() !== me.id).map(m => m.name).join(', ') %></title>
+  <style>
+    /* Minimal clean layout */
+    :root { --accent:#2f80ed; --muted:#777; --bg:#f6f8fa; }
+    body { font-family: Inter, Arial, sans-serif; margin:0; background:var(--bg); }
+    .topbar { display:flex; justify-content:space-between; align-items:center; padding:12px 18px; background:#fff; box-shadow:0 1px 0 rgba(0,0,0,0.05); }
+    .topbar .title { font-weight:600; }
+    .container { display:flex; height:calc(100vh - 56px); gap:16px; padding:16px; box-sizing:border-box; }
+    .sidebar { width:280px; background:#fff; border-radius:10px; padding:12px; box-shadow:0 6px 18px rgba(16,24,40,0.04); overflow:auto; }
+    .main { flex:1; background:#fff; border-radius:10px; padding:12px; display:flex; flex-direction:column; box-shadow:0 6px 18px rgba(16,24,40,0.04); }
+    .messages { flex:1; overflow:auto; padding:12px; display:flex; flex-direction:column; gap:8px; }
+    .msg { max-width:70%; padding:8px 10px; border-radius:10px; }
+    .msg.me { align-self:flex-end; background:var(--accent); color:white; border-bottom-right-radius:2px; }
+    .msg.other { align-self:flex-start; background:#f1f3f5; color:#111; border-bottom-left-radius:2px; }
+    .composer { display:flex; gap:8px; padding:12px; border-top:1px solid #eee; }
+    .composer input { flex:1; padding:10px 12px; border-radius:8px; border:1px solid #ddd; outline:none; }
+    .composer button { padding:10px 14px; background:var(--accent); color:#fff; border:none; border-radius:8px; cursor:pointer; }
+    .user-row { display:flex; justify-content:space-between; align-items:center; padding:8px 6px; border-bottom:1px solid #f1f1f1; }
+    .small { font-size:12px; color:var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="title">
+      Chat with
+      <% chat.members.forEach(m => { if (m._id.toString() !== me.id) { %>
+        <strong><%= m.name %></strong>
+      <% } }) %>
+      <span class="small"> — <%= me.college %></span>
+    </div>
+    <div>
+      <a href="/chat">← Back</a> &nbsp; | &nbsp;
+      <a href="/auth/logout">Logout</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <aside class="sidebar">
+      <div style="font-weight:600; margin-bottom:8px;">Conversation</div>
+      <div class="small">Members</div>
+      <% chat.members.forEach(m => { %>
+        <div class="user-row">
+          <div><%= m.name %></div>
+          <div class="small"><%= (m._id.toString() === me.id) ? 'You' : m.email %></div>
+        </div>
+      <% }) %>
+    </aside>
+
+    <main class="main">
+      <div id="messages" class="messages">
+        <% messages.forEach(m => { %>
+          <div class="msg <%= (m.sender._id.toString() === me.id) ? 'me' : 'other' %>">
+            <div style="font-size:13px; font-weight:600;">
+              <%= (m.sender._id.toString() === me.id) ? 'You' : m.sender.name %>
+            </div>
+            <div style="margin-top:6px;"><%= m.text %></div>
+            <div class="small" style="margin-top:6px;"><%= new Date(m.createdAt).toLocaleString() %></div>
+          </div>
+        <% }) %>
+      </div>
+
+      <div class="composer">
+        <input id="messageInput" placeholder="Type a message..." autocomplete="off" />
+        <button id="sendBtn">Send</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- Socket.io client -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // Server-injected values (safe because EJS rendered them)
+    const meId = '<%= me.id %>';
+    const chatId = '<%= chat._id %>';
+
+    const socket = io(); // same origin
+    socket.on('connect', () => {
+      console.log('socket connected', socket.id);
+      // register this socket to a user id on server
+      socket.emit('register', meId);
+      // join the chat room so server will emit messages to it
+      socket.emit('joinChat', chatId);
+    });
+
+    // helper to append message to DOM and scroll
+    function appendMessage(msg) {
+      const wrap = document.createElement('div');
+      const isMe = (msg.sender && msg.sender._id && (msg.sender._id.toString ? msg.sender._id.toString() : msg.sender._id) === meId);
+      wrap.className = 'msg ' + (isMe ? 'me' : 'other');
+
+      const who = document.createElement('div');
+      who.style.fontWeight = '600';
+      who.style.fontSize = '13px';
+      who.textContent = isMe ? 'You' : (msg.sender && msg.sender.name ? msg.sender.name : 'Unknown');
+
+      const text = document.createElement('div');
+      text.style.marginTop = '6px';
+      text.textContent = msg.text || '';
+
+      const time = document.createElement('div');
+      time.className = 'small';
+      time.style.marginTop = '6px';
+      time.textContent = new Date(msg.createdAt || Date.now()).toLocaleString();
+
+      wrap.appendChild(who);
+      wrap.appendChild(text);
+      wrap.appendChild(time);
+
+      const messages = document.getElementById('messages');
+      messages.appendChild(wrap);
+      messages.scrollTop = messages.scrollHeight - messages.clientHeight;
+    }
+
+    // incoming messages from server
+    socket.on('message', (msg) => {
+      appendMessage(msg);
+    });
+
+    // send message
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const text = input.value.trim();
+      if (!text) return;
+      // optimistic UI: append locally (server will also broadcast)
+      appendMessage({ sender: { _id: meId, name: 'You' }, text, createdAt: Date.now() });
+      socket.emit('sendMessage', { chatId, text });
+      input.value = '';
+      input.focus();
+    }
+
+    document.getElementById('sendBtn').addEventListener('click', sendMessage);
+    document.getElementById('messageInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    // scroll to bottom on load
+    window.addEventListener('load', () => {
+      const messages = document.getElementById('messages');
+      messages.scrollTop = messages.scrollHeight - messages.clientHeight;
+    });
+  </script>
+</body>
+</html>
