@@ -1,0 +1,408 @@
+/* Chat Window UI - mobile-first polished CSS
+   Replaced to prioritize mobile: larger touch targets, sticky composer,
+   safe-area support, compact message layout, collapsible sidebar, and
+   optimized images/media. Drop this into /css/chatWindow-ui.css
+*/
+:root {
+    --bg: #f6f8fb;
+    --panel: #ffffff;
+    --muted: #6b7280;
+    --accent: #4f46e5;
+    --accent-weak: rgba(79, 70, 229, 0.10);
+    --me: #dcf8c6;
+    --other: #ffffff;
+    --border: #e6ecf2;
+    --shadow: 0 8px 28px rgba(16, 24, 40, 0.08);
+    --radius: 14px;
+    --gutter: 14px;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color-scheme: light;
+}
+
+* {
+    box-sizing: border-box
+}
+
+html,
+body {
+    height: 100%
+}
+
+body {
+    margin: 0;
+    background: linear-gradient(180deg, rgb(32, 32, 32),black,rgb(14, 14, 14), #060606 140%);
+    font-size: 16px;
+    color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Topbar */
+.topbar {
+    height: 56px;
+    background: black;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--gutter);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.topbar .title {
+    display: flex;
+    flex-direction: row
+}
+
+.topbar .title strong {
+    font-size: 15px
+}
+
+.topbar .title .small {
+    font-size: 12px;
+    color: white;
+}
+
+.topbar a {
+    color: white;
+    text-decoration: none
+}
+
+/* Layout - mobile-first: single column, sidebar collapses */
+.container {
+    max-width: 920px;
+    margin: 12px auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 0 var(--gutter);
+    gap: 12px;
+}
+
+.sidebar {
+    display: none;
+    /* hidden by default on mobile, can be toggled client-side */
+}
+
+/* Main area */
+.main {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 56px - 24px)
+}
+
+.messages {
+    background-color: rgb(19, 19, 19);
+    border-radius: 12px;
+    padding: 12px;
+    color: white;
+    
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Message bubbles - compact and touch-friendly */
+.msg {
+    max-width: 86%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    display: inline-block;
+    color: white;
+    word-break: break-word;
+    box-shadow: 0 3px 10px rgba(10, 20, 30, 0.04);
+}
+
+.msg .sender {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px
+}
+
+.msg .time {
+    font-size: 12px;
+    color: var(--muted);
+    opacity: 0.95;
+    margin-top: 8px
+}
+
+.msg.me {
+    margin-left: auto;
+    background: linear-gradient(90deg, rgb(51, 0, 0), #570000);
+    border-bottom-right-radius: 6px
+}
+
+.msg.other {
+    margin-right: auto;
+    color: white;
+    background: linear-gradient(90deg, rgb(4, 1, 33), #010229);
+    border-bottom-left-radius: 6px
+}
+
+/* Images in messages scale to viewport width */
+.msg img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    display: block
+}
+
+/* Composer - sticky to bottom with safe-area handling */
+.composer {
+    position: sticky;
+    bottom: env(safe-area-inset-bottom);
+    background-color:black;
+    padding: 10px;
+    color: white;
+    display: flex;
+    gap: 8px;
+    align-items: center
+}
+
+.input {
+    flex: 1;
+    background: black;
+    color: white;
+    padding: 10px;
+    border-radius: 12px;
+    
+    box-shadow: 0 6px 18px rgba(16, 24, 40, 0.05)
+}
+
+.input input {
+    width: 100%;
+    border: 0;
+    color: white;
+    outline: none;
+    font-size: 16px;
+    padding: 6px;
+    background: transparent
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    align-items: center
+}
+
+.btn {
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 0;
+    cursor: pointer;
+    font-weight: 700;
+    background: transparent
+}
+
+.btn.primary {
+    background: linear-gradient(90deg, var(--accent), #7c3aed);
+    color: white;
+    box-shadow: 0 10px 22px rgba(79, 70, 229, 0.12)
+}
+
+.btn.ghost {
+    border: 1px solid var(--border);
+    background: transparent
+}
+
+.icon-btn {
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 12px;
+    background-color: rgb(10, 9, 9);
+  border: none;
+    cursor: pointer
+}
+
+.small {
+    font-size: 12px;
+    color: var(--muted)
+}
+
+/* Preview overlay - closer to thumb reach */
+.preview-wrap {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 80px;
+    background: var(--panel);
+    padding: 10px;
+    border-radius: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    box-shadow: 0 18px 40px rgba(16, 24, 40, 0.14);
+    z-index: 70
+}
+
+.preview-wrap img {
+    width: 84px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px
+}
+
+.preview-wrap .row {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px
+}
+
+/* Accessibility & focus */
+.input input:focus {
+    outline: 3px solid var(--accent-weak);
+    border-radius: 10px
+}
+
+.btn:focus,
+.icon-btn:focus {
+    outline: 3px solid rgba(79, 70, 229, 0.12);
+    outline-offset: 2px
+}
+
+/* Scroll behavior */
+.messages {
+    scroll-behavior: smooth
+}
+
+/* Larger touch targets for mobile interactions */
+.icon-btn,
+.btn {
+    min-height: 44px;
+    min-width: 44px
+}
+
+/* Keyboard-aware spacing: when virtual keyboard opens on mobile, ensure composer stays visible.
+   (Can't control keyboard but ensure enough bottom padding in messages) */
+.messages {
+    padding-bottom: 20px;
+    
+}
+
+/* Condensed / compact chat for small screens */
+@media (max-width:480px) {
+    :root {
+        --gutter: 10px;
+        font-size: 15px
+    }
+
+    .topbar {
+        height: 52px;
+        padding: 0 10px
+    }
+
+    .container {
+        margin: 8px auto;
+        padding: 0 10px
+    }
+
+    .messages {
+        padding: 10px;
+        gap: 8px
+    }
+
+    .msg {
+        padding: 10px;
+        border-radius: 12px
+    }
+
+    .msg .sender {
+        font-size: 11px
+    }
+
+    .msg .time {
+        font-size: 11px
+    }
+
+    .preview-wrap {
+        bottom: 72px;
+        padding: 8px
+    }
+
+    .btn.primary {
+        padding: 9px 12px
+    }
+}
+
+/* Tablet and up - show sidebar as collapsible panel */
+@media (min-width:700px) {
+    .container {
+        grid-template-columns: 260px 1fr;
+        gap: 18px
+    }
+
+    .sidebar {
+        display: block;
+        background-color: rgb(20, 20, 20);
+        border-radius: 12px;
+        padding: 12px;
+        
+        height: calc(100vh - 56px - 40px);
+        overflow: auto
+    }
+
+    .messages {
+        height: calc(100vh - 56px - 40px)
+    }
+}
+
+/* Desktop refinements */
+@media (min-width:1100px) {
+    .container {
+        max-width: 1100px
+    }
+
+    .msg {
+        max-width: 72%
+    }
+}
+
+/* Tiny scrollbar styling */
+.messages::-webkit-scrollbar {
+    width: 9px
+}
+
+.messages::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #d0d9e6, #bfcfe0);
+    border-radius: 10px
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion:reduce) {
+    .msg {
+        transition: none
+    }
+
+    .messages {
+        scroll-behavior: auto
+    }
+}
+
+/* High contrast */
+@media (prefers-contrast:more) {
+    :root {
+        --muted: #263238
+    }
+}
+
+/* Ensure file input remains accessible but out of sight */
+#imageInput {
+    position: absolute;
+    left: -9999px
+}
+
+/* Composer shadow separation on mobile to avoid blending with keyboard */
+.composer {
+    box-shadow: 0 -6px 18px rgba(10, 20, 30, 0.04);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px
+}
+
+/* make messages readable on small devices: increase line-height */
+.msg {
+    line-height: 1.45;
+    font-size: 15px
+}

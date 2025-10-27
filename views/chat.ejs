@@ -3,9 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <title>Chats | CollegeBuddy</title>
-  <link rel="stylesheet" href="/css/chat.css">
+<link rel="stylesheet" href="/css/chats-ui.css">
+<link rel="stylesheet" href="/css/ui-base.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Share+Tech&family=Story+Script&display=swap" rel="stylesheet"> 
 </head>
+
+
+<script>
+  window.meId = "<%= me ? me.id : '' %>";
+  window.chatId = "<%= typeof chat !== 'undefined' && chat ? chat._id : '' %>";
+</script>
 <body>
+  <div class="container">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">CB</div>
+      <div>
+        <div class="kicker">CollegeBuddy</div>
+        <div class="small">Connect with classmates & beyond</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <button id="themeToggle" class="btn icon" title="Toggle theme">🌓</button>
+      <a href="/auth/logout" class="btn ghost">Logout</a>
+    </div>
+  </div>
+
+  <div class="header-row">
+    <div class="header-left">
+      <div class="search-wrap">
+        <div class="input">
+          <svg style="width:16px;height:16px;opacity:.7" viewBox="0 0 24 24"><path fill="currentColor" d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.57 4.23L20 18.3 18.6 19.7l-5.57-5.57A6.5 6.5 0 1 1 9.5 3m0 2A4.5 4.5 0 1 0 14 9.5 4.5 4.5 0 0 0 9.5 5Z" /></svg>
+          <input type="text" id="searchInput" placeholder="Search name or email">
+        </div>
+        
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn">Invite</button>
+    </div>
+  </div>
+
+  <div id="userGrid" class="grid">
+ 
+    <% users.forEach(u => { %>
+    <div class="user-card card fade-in">
+      <div class="user-left">
+        <div class="avatar"><%= (u.avatarUrl) ? `<img src="${u.avatarUrl}" style="width:100%;height:100%;object-fit:cover">` : (u.name.split(' ').map(n=>n[0]).slice(0,2).join('')) %></div>
+        <div class="user-info">
+          <div class="name"><%= u.name %></div>
+          <div class="meta small"><%= u.email %> · <%= u.college %></div>
+        </div>
+      </div>
+      <div class="user-actions">
+        <div class="time small">2h</div>
+        <a href="/chat/user/<%= u._id %>" class="btn msg">Message</a>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</div>
   <div class="navbar">
     <div class="welcome">
       👋 Welcome, <%= me.name %> (<%= me.college %>)
@@ -30,13 +91,16 @@
   <div class="user-list">
     <% if (users && users.length > 0) { %>
       <% users.forEach(u => { %>
-        <div class="user-card">
+        
+        <div class="user-card" >
+          <a href="/chat/user/<%= u._id %>" class="userlink">
           <div>
             <strong><%= u.name %></strong><br>
             <small><%= u.email %></small>
           </div>
-          <a href="/chat/user/<%= u._id %>">
-            <button>Message</button>
+          <a href="/chat/user/<%= u._id %>" >
+            <button class="usermsg">Message</button>
+          </a>
           </a>
         </div>
       <% }) %>
@@ -45,4 +109,5 @@
     <% } %>
   </div>
 </body>
+<script src="/js/ui.js"></script>
 </html>

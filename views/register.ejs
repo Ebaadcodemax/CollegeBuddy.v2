@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register | CollegeBuddy</title>
 
-    <!-- Font + CSS -->
+    
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
       rel="stylesheet"
@@ -20,7 +20,8 @@
       <form method="POST" action="/auth/register">
         <input type="text" name="name" placeholder="Full Name" required />
         <input type="email" name="email" placeholder="Email" required />
-        <input type="text" name="college" placeholder="College Name" required />
+        <input type="text" name="college" placeholder="Enter college short form without city name" required />
+        <input type="text" name="year" placeholder="college year? eg: FY,SY..." required />
         <input type="password" name="password" placeholder="Password" required />
         <button type="submit">Register</button>
       </form>
