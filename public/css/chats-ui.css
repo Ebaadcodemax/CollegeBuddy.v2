@@ -292,7 +292,7 @@ body {
 }
 
 .user-list {
-  margin-top: 12px;
+  margin-top: 7vh;
 }
 .user-card{
   background: linear-gradient(90deg, rgb(0, 0, 0), rgb(17, 17, 17));
@@ -319,15 +319,16 @@ body {
   color: white;
 }
 .user-list .user-card {
+
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px;
   font-family: 'Poppins', sans-serif;
-  
   color: white;
   border-radius: 10px;
-  margin-bottom: 10px
+  margin-bottom:5vh;
+  
 }
 
 

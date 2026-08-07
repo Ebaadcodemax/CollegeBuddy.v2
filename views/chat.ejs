@@ -48,24 +48,7 @@
     </div>
   </div>
 
-  <div id="userGrid" class="grid">
  
-    <% users.forEach(u => { %>
-    <div class="user-card card fade-in">
-      <div class="user-left">
-        <div class="avatar"><%= (u.avatarUrl) ? `<img src="${u.avatarUrl}" style="width:100%;height:100%;object-fit:cover">` : (u.name.split(' ').map(n=>n[0]).slice(0,2).join('')) %></div>
-        <div class="user-info">
-          <div class="name"><%= u.name %></div>
-          <div class="meta small"><%= u.email %> · <%= u.college %></div>
-        </div>
-      </div>
-      <div class="user-actions">
-        <div class="time small">2h</div>
-        <a href="/chat/user/<%= u._id %>" class="btn msg">Message</a>
-      </div>
-    </div>
-    <% }) %>
-  </div>
 </div>
   <div class="navbar">
     <div class="welcome">

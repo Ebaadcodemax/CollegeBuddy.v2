@@ -153,9 +153,12 @@ io.on('connection', (socket) => {
       if (set.size === 0) onlineUsers.delete(userId);
       else onlineUsers.set(userId, set);
     }
+    
     console.log('🔴 socket disconnected', socket.id);
   });
 });
+
+
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
